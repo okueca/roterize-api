@@ -5,3 +5,5 @@ services:
       - RAILS_MASTER_KEY
     ports:
       - "3000:3000"
+    volumes:
+      - .:/rails
