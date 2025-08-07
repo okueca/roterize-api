@@ -31,3 +31,22 @@ This repository contains the **backend API**, built with **Ruby on Rails**, usin
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
+
+---
+
+## 🐳 Running with Docker
+
+### 1. Build the containers
+```bash
+docker-compose build --no-cache
+```
+### 2. Start the services
+```bash
+docker-compose up
+```
+### 3. Run Rails commands (like migrations or console)
+```bash
+docker exec -u root -it roterize-api-web-1 bundle exec rails <your-command>
+```
+
+
