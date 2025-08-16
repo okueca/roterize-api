@@ -14,6 +14,16 @@ gem "puma", ">= 5.0"
 # For MangoDB
 gem 'mongoid'
 
+# To accept requests from a different origin.
+gem 'rack-cors'
+
+# devise, devise-JWT and jsonapi-serializer
+gem 'devise'
+gem 'devise-jwt'
+gem 'jsonapi-serializer'
+
+# Env variables
+gem 'dotenv-rails', groups: [:development, :test]
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"

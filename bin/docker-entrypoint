@@ -6,8 +6,9 @@ if [ -z "${LD_PRELOAD+x}" ] && [ -f /usr/lib/*/libjemalloc.so.2 ]; then
 fi
 
 # If running the rails server then create or migrate existing database
+# ./bin/rails db:prepare
 if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
+  echo "to db:prepare"
 fi
 
 exec "${@}"

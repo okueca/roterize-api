@@ -3,6 +3,7 @@ services:
     build: .
     environment:
       - RAILS_MASTER_KEY
+      - RAILS_LOG_TO_STDOUT=true
     ports:
       - "3000:3000"
     volumes:
