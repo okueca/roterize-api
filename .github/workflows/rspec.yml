@@ -28,23 +28,15 @@ jobs:
       - name: Build images
         run: docker compose -f compose.yml build --no-cache
 
-      # Start ONLY dependencies; don't start the web service here
-      - name: Start dependencies
-        run: docker compose -f compose.yml up
-        # ^ adjust to your actual dependency service names
-
-      # Run tests in a fresh container as root to fix bind-mount perms,
-      # create tmp/log, prepare DB (if AR present), then run RSpec.
-      # Run tests in an ephemeral container, as root to create tmp/log,
-      # and PASS ALL NEEDED ENVs explicitly with -e
+      # No "up" step needed if you use Atlas
 
       - name: Execute RSpec
         run: |
           docker compose -f compose.yml run --rm -T --user root \
             -e RAILS_ENV=test \
             -e RACK_ENV=test \
-            -e MONGODB_URL=${{ vars.MONGODB_URL }} \        # e.g. mongodb://mongo:27017/app_test
-            -e RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }} \
+            -e "MONGODB_URL=${{ vars.MONGODB_URL }}" \
+            -e "RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }}" \
             -e BOOTSNAP_DISABLE=1 \
             -e DISABLE_SPRING=1 \
             web bash -lc '
