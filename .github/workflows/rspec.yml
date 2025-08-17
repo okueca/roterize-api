@@ -28,7 +28,7 @@ jobs:
 
       # Start only dependencies (adjust names to match your compose)
       - name: Start dependencies
-        run: docker compose -f compose.yml up -d db redis
+        run: docker compose -f compose.yml up
 
       # Run tests in a fresh, one-off container for your app service.
       # IMPORTANT: replace "web" with your actual service name in compose.yml
