@@ -5,49 +5,55 @@ on:
     branches:
       - main
 
-jobs: 
+jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      RACK_ENV: test
+      BOOTSNAP_DISABLE: "1"
+      DISABLE_SPRING: "1"
+      RAILS_LOG_TO_STDOUT: "1"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to Docker Hub
+      - name: Docker login
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
-      - name: Run docker compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
-        with:
-          compose-file: "./compose.yml"
 
       - name: Build images
         run: docker compose -f compose.yml build --no-cache
 
-      # Start only dependencies (adjust names to match your compose)
+      # Start ONLY dependencies; don't start the web service here
       - name: Start dependencies
-        run: docker compose -f compose.yml up
+        run: docker compose -f compose.yml up -d mongo redis
+        # ^ adjust to your actual dependency service names
 
-      # Prepare app dirs, DB, then run RSpec in a fresh one-off container
+      # Run tests in a fresh container as root to fix bind-mount perms,
+      # create tmp/log, prepare DB (if AR present), then run RSpec.
       - name: Run RSpec (one-off container)
         env:
-          RAILS_ENV: test
-          RACK_ENV: test
-          # Provide BOTH in case your initializer reads credentials or ENV:
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}          # to read Rails credentials
-          MONGODB_URL: ${{ vars.MONGODB_URL }}          # to read Rails credentials
-          # Optional stabilizers (safe to include)
-          DISABLE_SPRING: "1"
-          BOOTSNAP_DISABLE: "1"
-          RAILS_LOG_TO_STDOUT: "1"
+          MONGODB_URL: ${{ vars.MONGODB_URL }}                 # e.g. mongodb://mongo:27017/app_test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}    # only needed if you read credentials in test
         run: |
-          docker compose -f compose.yml run --rm -T web bash -lc '
+          docker compose -f compose.yml run --rm -T --user root web bash -lc '
             set -e
+            umask 000
+            mkdir -p log tmp/pids tmp/cache tmp/sockets
+            : > log/test.log
+            chmod -R a+rwX log tmp
+            # If you also use ActiveRecord alongside Mongoid:
             bundle exec rspec
           '
 
       - name: Show logs on failure
         if: failure()
         run: docker compose -f compose.yml logs --no-color
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f compose.yml down -v
