@@ -49,4 +49,13 @@ docker-compose up
 docker exec -u root -it roterize-api-web-1 bundle exec rails <your-command>
 ```
 
+## 🧪 Testing
 
+Run the test suite **inside** the web container using the **test** environment (GitHub‑flavored Markdown friendly commands):
+
+```bash
+# All specs
+docker exec -e RAILS_ENV=test -e RACK_ENV=test -it roterize-api-web-1 bundle exec rspec
+
+# Verbose output (documentation formatter)
+docker exec -e RAILS_ENV=test -e RACK_ENV=test -it roterize-api-web-1 bundle exec rspec --format doc
