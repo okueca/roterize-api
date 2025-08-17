@@ -35,20 +35,26 @@ jobs:
 
       # Run tests in a fresh container as root to fix bind-mount perms,
       # create tmp/log, prepare DB (if AR present), then run RSpec.
-      - name: Run RSpec (one-off container)
-        env:
-          MONGODB_URL: ${{ vars.MONGODB_URL }}                 # e.g. mongodb://mongo:27017/app_test
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}    # only needed if you read credentials in test
+      # Run tests in an ephemeral container, as root to create tmp/log,
+      # and PASS ALL NEEDED ENVs explicitly with -e
+
+      - name: Execute RSpec
         run: |
-          docker compose -f compose.yml run --rm -T --user root web bash -lc '
-            set -e
-            umask 000
-            mkdir -p log tmp/pids tmp/cache tmp/sockets
-            : > log/test.log
-            chmod -R a+rwX log tmp
-            # If you also use ActiveRecord alongside Mongoid:
-            bundle exec rspec
-          '
+          docker compose -f compose.yml run --rm -T --user root \
+            -e RAILS_ENV=test \
+            -e RACK_ENV=test \
+            -e MONGODB_URL=${{ vars.MONGODB_URL }} \        # e.g. mongodb://mongo:27017/app_test
+            -e RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }} \
+            -e BOOTSNAP_DISABLE=1 \
+            -e DISABLE_SPRING=1 \
+            web bash -lc '
+              set -e
+              umask 000
+              mkdir -p log tmp/pids tmp/cache tmp/sockets
+              : > log/test.log
+              chmod -R a+rwX log tmp
+              bundle exec rspec
+            '
 
       - name: Show logs on failure
         if: failure()
