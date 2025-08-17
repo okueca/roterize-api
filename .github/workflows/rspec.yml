@@ -23,11 +23,21 @@ jobs:
         with:
           compose-file: "./compose.yml"
 
-      - name: Build services
-        run: docker compose build --no-cache
+      - name: Build images
+        run: docker compose -f compose.yml build --no-cache
 
-      - name: Start services
-        run: docker compose up -d
+      # Start only dependencies (adjust names to match your compose)
+      - name: Start dependencies
+        run: docker compose -f compose.yml up -d db redis
 
+      # Run tests in a fresh, one-off container for your app service.
+      # IMPORTANT: replace "web" with your actual service name in compose.yml
       - name: Run RSpec
-        run: docker exec -e RAILS_ENV=test -e RACK_ENV=test roterize-api-web-1 bundle exec rspec
+        run: |
+          docker compose -f compose.yml run --rm -T \
+            -e RAILS_ENV=test -e RACK_ENV=test \
+            web bundle exec rspec
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose -f compose.yml logs --no-color
