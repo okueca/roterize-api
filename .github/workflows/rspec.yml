@@ -37,6 +37,7 @@ jobs:
           RACK_ENV: test
           # Provide BOTH in case your initializer reads credentials or ENV:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}          # to read Rails credentials
+          MONGODB_URL: ${{ vars.MONGODB_URL }}          # to read Rails credentials
           # Optional stabilizers (safe to include)
           DISABLE_SPRING: "1"
           BOOTSNAP_DISABLE: "1"
