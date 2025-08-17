@@ -30,7 +30,7 @@ jobs:
 
       # Start ONLY dependencies; don't start the web service here
       - name: Start dependencies
-        run: docker compose -f compose.yml up -d mongo redis
+        run: docker compose -f compose.yml up
         # ^ adjust to your actual dependency service names
 
       # Run tests in a fresh container as root to fix bind-mount perms,
