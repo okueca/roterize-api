@@ -30,4 +30,4 @@ jobs:
         run: docker compose up -d
 
       - name: Run RSpec
-        run: docker exec -e RAILS_ENV=test -e RACK_ENV=test web bundle exec rspec
+        run: docker exec -e RAILS_ENV=test -e RACK_ENV=test roterize-api-web-1 bundle exec rspec
