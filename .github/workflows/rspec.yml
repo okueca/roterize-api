@@ -24,10 +24,10 @@ jobs:
           compose-file: "./compose.yml"
 
       - name: Build services
-        run: docker-compose build --no-cache
+        run: docker compose build --no-cache
 
       - name: Start services
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Run RSpec
         run: docker exec -e RAILS_ENV=test -e RACK_ENV=test roterize-api-web-1 bundle exec rspec
