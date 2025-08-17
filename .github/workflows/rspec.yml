@@ -21,7 +21,7 @@ jobs:
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          compose-file: "/compose.yml"
+          compose-file: "./compose.yml"
 
       - name: Build services
         run: docker-compose build --no-cache
