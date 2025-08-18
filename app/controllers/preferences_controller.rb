@@ -20,10 +20,10 @@ class PreferencesController < ApplicationController
       model = "gpt-3.5-turbo"
       chatCall = ChatgptService.new(build_raw_prompt(@preference), model)
       chatCall.call
-      iti = Itinerary.create(content: chatCall.content, raw_prompt: build_raw_prompt(@preference), started_at: @preference.time_range_start, ended_at: @preference.time_range_end,
-            location: @preference.location, model_used: model, tokens_used: chatCall.tokens_used, generated_at: @preference.created_at)
+      iti = Itinerary.create!(content: chatCall.content, raw_prompt: build_raw_prompt(@preference), started_at: @preference.time_range_start, ended_at: @preference.time_range_end,
+            location: @preference.location, model_used: model, tokens_used: chatCall.tokens_used, generated_at: @preference.created_at, user_id: @preference.user_id, preference_id: @preference.id)
       
-      render json: {"Itinerary": chatCall.content}, status: :created
+      render json: iti , status: :created
     else
       render json: @preference.errors, status: :unprocessable_entity
     end
