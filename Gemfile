@@ -21,7 +21,7 @@ gem 'rack-cors'
 gem 'devise'
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
-
+gem 'httparty'
 # Env variables
 gem 'dotenv-rails', groups: [:development, :test]
 
