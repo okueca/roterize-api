@@ -1,6 +1,6 @@
 # 📍 Roterize - Backend
 
-**Roterize** is a smart assistant that helps people plan special moments — like romantic dates, friend hangouts, or meaningful time with family — by generating personalized activity itineraries based on preferences, location, budget, and time.
+**Roterize** is a smart assistant that helps people plan special moments - like romantic dates, friend hangouts, or meaningful time with family - by generating personalized activity itineraries based on preferences, location, budget, and time.
 
 This repository contains the **backend API**, built with **Ruby on Rails**, using **MongoDB** as the data store.
 
