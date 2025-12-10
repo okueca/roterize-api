@@ -18,4 +18,10 @@ Rails.application.routes.draw do
 
   resources :preferences
 
+  resources :itineraries, only: [:index, :destroy] do
+    member do
+      patch :save_itinerary
+    end
+  end
+
 end

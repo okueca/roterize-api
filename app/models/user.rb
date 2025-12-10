@@ -48,4 +48,8 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
   include Mongoid::Timestamps
+
+  # Associations
+  has_many :itineraries
+  has_many :preferences
 end

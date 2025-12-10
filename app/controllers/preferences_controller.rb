@@ -24,10 +24,11 @@ class PreferencesController < ApplicationController
       chatCall.call
       content = chatCall.content
       iti = Itinerary.create!(content: content, raw_prompt: build_raw_prompt(@preference), started_at: @preference.time_range_start, ended_at: @preference.time_range_end,
-            location: @preference.location, model_used: model, tokens_used: chatCall.tokens_used, generated_at: @preference.created_at, user_id: @preference.user_id, preference_id: @preference.id)
+            location: @preference.location, model_used: model, tokens_used: chatCall.tokens_used, generated_at: @preference.created_at, user_id: @preference.user_id, preference_id: @preference.id, is_saved: false)
+      itinerary_activities = extract_activities(iti.content, iti.id)
+      iti.update!(title: itinerary_activities["title"])
       
-      print iti.content
-      render json: extract_activities(iti.content) , status: :created
+      render json: itinerary_activities , status: :created
     else
       render json: @preference.errors, status: :unprocessable_entity
     end
@@ -134,9 +135,9 @@ class PreferencesController < ApplicationController
       PROMPT
     end
 
-    def extract_activities(itinerary_text)
-      JSON.parse(itinerary_text)
+    def extract_activities(itinerary_text, itinerary_id)
+      parsed_data = JSON.parse(itinerary_text)
+      parsed_data.merge("itinerary_id" => itinerary_id.to_s)
     end
-
 
 end

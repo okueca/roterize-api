@@ -10,6 +10,7 @@ class Itinerary
   field :model_used, type: String
   field :tokens_used, type: Integer
   field :generated_at, type: Time
+  field :is_saved, type: Boolean
   belongs_to :preference
   belongs_to :user
 end
