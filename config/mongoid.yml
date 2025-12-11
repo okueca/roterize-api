@@ -301,4 +301,4 @@ production:
       uri: <%= ENV.fetch("MONGODB_URL")  %>
       options:
         server_selection_timeout: 5
-        database: roterize_api_tst
+        database: roterize_api_prd
