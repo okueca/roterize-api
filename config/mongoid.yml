@@ -295,3 +295,10 @@ test:
       options:
         server_selection_timeout: 5
         database: roterize_api_tst
+production:
+  clients:
+    default:
+      uri: <%= ENV.fetch("MONGODB_URL")  %>
+      options:
+        server_selection_timeout: 5
+        database: roterize_api_tst
