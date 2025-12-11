@@ -26,7 +26,7 @@ gem 'devise-jwt'
 gem 'jsonapi-serializer'
 gem 'httparty'
 # Env variables
-gem 'dotenv-rails', groups: [:development, :testm :production]
+gem 'dotenv-rails', groups: [:development, :test, :production]
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
