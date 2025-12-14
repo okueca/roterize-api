@@ -4,7 +4,8 @@ class User
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :jwt_authenticatable, jwt_revocation_strategy: self
+         :recoverable, :rememberable, :validatable, :jwt_authenticatable, 
+         :omniauthable, jwt_revocation_strategy: self, omniauth_providers: [:google_oauth2]
 
   # Workaround: satisfaz libs que assumem ActiveRecord
   def self.primary_key
@@ -14,6 +15,14 @@ class User
   def self.revoke_jwt(_payload, user)
     user.update_attribute(:jti, generate_jti)
   end
+
+  def self.from_omniauth(auth)
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.email = auth.info.email
+      user.password = Devise.friendly_token[0, 20]
+      user.name = auth.info.name
+    end
+  end
   
   ## Database authenticatable
   field :email,              type: String, default: ""
@@ -22,6 +31,8 @@ class User
   # New Fields
   field :name,              type: String, default: ""
   field :jti,              type: String, default: ""
+  field :provider,         type: String
+  field :uid,              type: String
 
   ## Recoverable
   field :reset_password_token,   type: String
