@@ -62,6 +62,68 @@ class PreferencesController < ApplicationController
 
     def build_raw_prompt(preference)
       <<~PROMPT
+          You are an intelligent assistant that helps users plan special moments with people they care about.
+
+          Generate a personalized itinerary based on the following user preferences:
+
+          - Reason for the moment: #{preference.reason}
+          - Location: #{preference.location}
+          - Date or time period: #{preference.when}
+          - Budget: #{preference.badget} (low, medium, or high)
+          - Preferred activities: #{preference.activities_preference.join(', ')}
+          - Time range: from #{preference.time_range_start} to #{preference.time_range_end}
+          - Personality of the companion: #{preference.personality_type} (e.g., introverted, extroverted, romantic)
+          - Mobility: #{preference.mobility} (e.g., walk, public transport, car)
+          - Weather tolerance: #{preference.weather_tolerance} (e.g., sunny, indoor_only)
+          - Romantic level: #{preference.romantic_level} (1 to 5)
+          - Group size: #{preference.group_size} people
+          - Extra notes: #{preference.custom_notes}
+
+          Your response MUST follow this exact JSON structure:
+
+          {
+            "title": "string",
+            "activities": [
+              {
+                "title": "string",
+                "time": "HH:MM-HH:MM",
+                "location": "string",
+                "description": "string",
+                "details": { 
+                  "type": "optional, e.g., 'movie'", 
+                  "catalog": [
+                    {
+                      "title": "string",      // movie title
+                      "showtimes": ["HH:MM", "HH:MM", ...]  // array of available session times
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+
+          Rules:
+          - Return ONLY valid JSON. No explanations, no markdown, no extra text.
+          - The list of activities must fit within the specified time range.
+          - Activities must flow naturally (no abrupt jumps).
+          - Adapt choices to mobility, weather, personality, budget, and romantic level.
+          - Use real local spots when possible.
+          - Keep descriptions short, clear, and charming.
+          - Do not repeat activities unless intentional.
+          - If an activity involves cinema, include a "details" field with:
+              - "type": "movie"
+              - "catalog": an array of movies showing at the selected cinema on the specified date, each with:
+                  - "title": the movie name
+                  - "showtimes": array of available session times for that movie
+          - If the activity is not cinema, "details.catalog" should be an empty array.
+          - Only include the "details" field when relevant.
+
+          Return ONLY the JSON object. Do not add any commentary.
+        PROMPT
+    end
+
+    def build_raw_prompt_2(preference)
+      <<~PROMPT
         You are an intelligent assistant that helps users plan special moments with people they care about.
 
         Generate a personalized itinerary based on the following user preferences:
@@ -103,35 +165,6 @@ class PreferencesController < ApplicationController
         - Do not repeat activities unless intentional.
 
         Return ONLY the JSON object. Do not add any commentary.
-      PROMPT
-    end
-
-    def build_raw_prompt_2(preference)
-      <<~PROMPT
-        You are an intelligent assistant that helps users plan special moments with people they care about.
-
-        Generate a personalized itinerary based on the following user preferences:
-
-        - Reason for the moment: #{preference.reason}
-        - Location: #{preference.location}
-        - Date or time period: #{preference.when}
-        - Budget: #{preference.badget} (low, medium, or high)
-        - Preferred activities: #{preference.activities_preference.join(', ')}
-        - Time range: from #{preference.time_range_start} to #{preference.time_range_end}
-        - Personality of the companion: #{preference.personality_type} (e.g., introverted, extroverted, romantic)
-        - Mobility: #{preference.mobility} (e.g., walk, public transport, car)
-        - Weather tolerance: #{preference.weather_tolerance} (e.g., sunny, indoor_only)
-        - Romantic level: #{preference.romantic_level} (1 to 5)
-        - Group size: #{preference.group_size} people
-        - Extra notes: #{preference.custom_notes}
-
-        Respond with a detailed plan for the moment, including:
-        - A title
-        - A list of suggested activities with estimated times
-        - Places or types of locations to visit (with variety and flow)
-        - Short descriptions for each activity
-
-        Make it charming, practical, and tailored to the user's input. The total duration must fit within the selected time range. Mention local spots if possible. Avoid repeating activities unless it's intentional (e.g., food + walk + sunset).
       PROMPT
     end
 
