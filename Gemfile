@@ -23,6 +23,8 @@ gem 'rack-cors'
 # devise, devise-JWT and jsonapi-serializer
 gem 'devise'
 gem 'devise-jwt'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
 gem 'jsonapi-serializer'
 gem 'httparty'
 # Env variables
