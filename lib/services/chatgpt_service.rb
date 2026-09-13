@@ -7,7 +7,7 @@
 #   ClaudeService.call('What is your name?')
 #   => "I'm Claude, an AI assistant made by Anthropic."
 # API Docs: https://docs.claude.com/en/api/messages
-class ClaudeService
+class ChatgptService
   include HTTParty
   attr_reader :api_url, :options, :model, :message
 
