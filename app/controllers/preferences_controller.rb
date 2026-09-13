@@ -20,7 +20,7 @@ class PreferencesController < ApplicationController
     @preference.user_id = current_user.id
     if @preference.save
       model = "gpt-3.5-turbo"
-      chatCall = ClaudeService.new(build_raw_prompt(@preference), model)
+      chatCall = ChatgptService.new(build_raw_prompt(@preference), model)
       chatCall.call
       content = chatCall.content
       iti = Itinerary.create!(content: content, raw_prompt: build_raw_prompt(@preference), started_at: @preference.time_range_start, ended_at: @preference.time_range_end,
