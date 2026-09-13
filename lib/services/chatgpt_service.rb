@@ -12,7 +12,7 @@ class ChatgptService
   attr_reader :api_url, :options, :model, :message
   
   def initialize(message, model = 'gpt-3.5-turbo')
-    api_key = Rails.application.credentials.chatgpt_api_key
+    api_key = ENV['CHATGPT_API_KEY'] || Rails.application.credentials.chatgpt_api_key
     @options = {
       headers: {
         'Content-Type' => 'application/json',
