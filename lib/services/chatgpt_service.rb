@@ -33,11 +33,11 @@ class ChatgptService
   def call
     body = {
       model: model,
-      max_tokens: 4096,
+      max_tokens: 2048,
       messages: [{ role: 'user', content: message }]
     }
 
-    response = HTTParty.post(api_url, body: body.to_json, headers: options[:headers], timeout: 10)
+    response = HTTParty.post(api_url, body: body.to_json, headers: options[:headers], timeout: 30)
 
     raise response['error']['message'] unless response.code == 200
 
