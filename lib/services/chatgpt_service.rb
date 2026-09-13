@@ -1,10 +1,10 @@
 # @note: This service is used to call the Anthropic API to generate a response to a message
-# @note: The API key is stored in the credentials file
+# @note: The API key is stored in the ANTHROPIC_API_KEY environment variable
 # @param message [String] The message to generate a response for
 # @param model [String] The model to use for the response
 # @return [String] The generated response
 # @example
-#   ClaudeService.call('What is your name?')
+#   ChatgptService.call('What is your name?')
 #   => "I'm Claude, an AI assistant made by Anthropic."
 # API Docs: https://docs.claude.com/en/api/messages
 class ChatgptService
@@ -12,7 +12,7 @@ class ChatgptService
   attr_reader :api_url, :options, :model, :message
 
   def initialize(message, model = 'claude-sonnet-4-6')
-    api_key = Rails.application.credentials.anthropic_api_key
+    api_key = ENV['ANTHROPIC_API_KEY']
 
     @options = {
       headers: {
