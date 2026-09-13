@@ -19,7 +19,7 @@ class PreferencesController < ApplicationController
     @preference = Preference.new(preference_params)
     @preference.user_id = current_user.id
     if @preference.save
-      model = "gpt-3.5-turbo"
+      model = "claude-sonnet-4-6"
       chatCall = ChatgptService.new(build_raw_prompt(@preference), model)
       chatCall.call
       content = chatCall.content
