@@ -169,8 +169,13 @@ class PreferencesController < ApplicationController
     end
 
     def extract_activities(itinerary_text, itinerary_id)
-      parsed_data = JSON.parse(itinerary_text)
-      parsed_data.merge("itinerary_id" => itinerary_id.to_s)
+        clean_text = itinerary_text.gsub(/\A```json\s*/, '').gsub(/```\s*\z/, '').strip
+        parsed_data = JSON.parse(clean_text)
+        parsed_data.merge("itinerary_id" => itinerary_id.to_s)
+      rescue JSON::ParserError => e
+        Rails.logger.error("Failed to parse itinerary JSON: #{e.message}")
+        Rails.logger.error("Raw itinerary_text: #{itinerary_text}")
+        raise
     end
 
 end
